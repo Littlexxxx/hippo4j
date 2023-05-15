@@ -86,9 +86,12 @@ public class DynamicThreadPoolRefreshListener extends AbstractRefreshListener<Ex
             if (!checkConsistency(threadPoolId, properties)) {
                 continue;
             }
+            // 动态修改线程池
             dynamicRefreshPool(threadPoolId, properties);
             ExecutorProperties beforeProperties = GlobalCoreThreadPoolManage.getProperties(properties.getThreadPoolId());
+            // 更新缓存中配置
             GlobalCoreThreadPoolManage.refresh(threadPoolId, failDefaultExecutorProperties(beforeProperties, properties));
+            // 发送配置变更通知
             ChangeParameterNotifyRequest changeRequest = buildChangeRequest(beforeProperties, properties);
             log.info(CHANGE_THREAD_POOL_TEXT,
                     threadPoolId,
@@ -241,6 +244,7 @@ public class DynamicThreadPoolRefreshListener extends AbstractRefreshListener<Ex
     private void dynamicRefreshPool(String threadPoolId, ExecutorProperties properties) {
         ExecutorProperties beforeProperties = GlobalCoreThreadPoolManage.getProperties(properties.getThreadPoolId());
         ThreadPoolExecutor executor = GlobalThreadPoolManage.getExecutorService(threadPoolId).getExecutor();
+        // 不相同的时候执行
         if (properties.getMaximumPoolSize() != null && properties.getCorePoolSize() != null) {
             ThreadPoolExecutorUtil.safeSetPoolSize(executor, properties.getCorePoolSize(), properties.getMaximumPoolSize());
         } else {

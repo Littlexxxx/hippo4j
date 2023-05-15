@@ -41,6 +41,7 @@ public class PlatformsRefreshListener extends AbstractRefreshListener<ExecutorPr
     @Override
     public void onApplicationEvent(Hippo4jConfigDynamicRefreshEvent threadPoolDynamicRefreshEvent) {
         BootstrapConfigProperties bindableConfigProperties = threadPoolDynamicRefreshEvent.getBootstrapConfigProperties();
+        // 动态线程池，注册消息通知
         List<ExecutorProperties> executors = bindableConfigProperties.getExecutors();
         for (ExecutorProperties executorProperties : executors) {
             String threadPoolId = executorProperties.getThreadPoolId();

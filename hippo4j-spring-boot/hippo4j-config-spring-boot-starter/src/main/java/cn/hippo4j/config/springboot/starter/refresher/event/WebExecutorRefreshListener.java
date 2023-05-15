@@ -55,6 +55,7 @@ public class WebExecutorRefreshListener extends AbstractRefreshListener<WebExecu
     @Override
     public void onApplicationEvent(Hippo4jConfigDynamicRefreshEvent threadPoolDynamicRefreshEvent) {
         BootstrapConfigProperties bindableCoreProperties = threadPoolDynamicRefreshEvent.getBootstrapConfigProperties();
+        // 判断是否web事件
         if (bindableCoreProperties.getWeb() == null) {
             return;
         }
@@ -62,6 +63,7 @@ public class WebExecutorRefreshListener extends AbstractRefreshListener<WebExecu
             ThreadPoolParameterInfo nowParameter = buildWebPoolParameter(bindableCoreProperties);
             if (nowParameter != null) {
                 WebThreadPoolHandlerChoose webThreadPoolHandlerChoose = ApplicationContextHolder.getBean(WebThreadPoolHandlerChoose.class);
+                // 选择web容器线程池
                 WebThreadPoolService webThreadPoolService = webThreadPoolHandlerChoose.choose();
                 ThreadPoolParameter beforeParameter = webThreadPoolService.getWebThreadPoolParameter();
 
@@ -75,6 +77,7 @@ public class WebExecutorRefreshListener extends AbstractRefreshListener<WebExecu
                 if (nowParameter.getKeepAliveTime() == null) {
                     nowParameter.setKeepAliveTime(beforeParameter.getKeepAliveTime());
                 }
+                // 不相同时执行
                 if (!Objects.equals(beforeParameter.getCoreSize(), nowParameter.getCoreSize())
                         || !Objects.equals(beforeParameter.getMaxSize(), nowParameter.getMaxSize())
                         || !Objects.equals(beforeParameter.getKeepAliveTime(), nowParameter.getKeepAliveTime())) {

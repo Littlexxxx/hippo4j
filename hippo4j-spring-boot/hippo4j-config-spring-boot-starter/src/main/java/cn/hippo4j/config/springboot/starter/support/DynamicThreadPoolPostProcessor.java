@@ -47,6 +47,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Dynamic thread-pool post processor.
+ *
+ * {@link DynamicThreadPool} 注解解析
  */
 @Slf4j
 @AllArgsConstructor
@@ -116,9 +118,12 @@ public final class DynamicThreadPoolPostProcessor implements BeanPostProcessor {
                 dynamicThreadPoolWrapper.setInitFlag(Boolean.TRUE);
             }
             ThreadPoolNotifyAlarm threadPoolNotifyAlarm = buildThreadPoolNotifyAlarm(executorProperties);
+            // executor alarm
             GlobalNotifyAlarmManage.put(threadPoolId, threadPoolNotifyAlarm);
         }
+        // executor
         GlobalThreadPoolManage.registerPool(dynamicThreadPoolWrapper.getThreadPoolId(), dynamicThreadPoolWrapper);
+        // executor properties
         GlobalCoreThreadPoolManage.register(
                 threadPoolId,
                 executorProperties == null

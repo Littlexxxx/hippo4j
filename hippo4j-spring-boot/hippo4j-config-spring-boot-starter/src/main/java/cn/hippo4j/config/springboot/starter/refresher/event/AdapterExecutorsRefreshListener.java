@@ -55,6 +55,7 @@ public class AdapterExecutorsRefreshListener extends AbstractRefreshListener<Ada
     public void onApplicationEvent(Hippo4jConfigDynamicRefreshEvent event) {
         List<AdapterExecutorProperties> adapterExecutors;
         Map<String, ThreadPoolAdapter> threadPoolAdapterMap = ApplicationContextHolder.getBeansOfType(ThreadPoolAdapter.class);
+        // 框架线程池
         if (CollectionUtil.isEmpty(adapterExecutors = event.getBootstrapConfigProperties().getAdapterExecutors()) || CollectionUtil.isEmpty(threadPoolAdapterMap)) {
             return;
         }
@@ -69,6 +70,7 @@ public class AdapterExecutorsRefreshListener extends AbstractRefreshListener<Ada
             threadPoolAdapterMap.forEach((key, val) -> {
                 if (Objects.equals(val.mark(), each.getMark())) {
                     ThreadPoolAdapterState threadPoolState = val.getThreadPoolState(each.getThreadPoolKey());
+                    // 不相同的时候 执行
                     if (!Objects.equals(threadPoolState.getCoreSize(), each.getCorePoolSize())
                             || !Objects.equals(threadPoolState.getMaximumSize(), each.getMaximumPoolSize())) {
                         val.updateThreadPool(BeanUtil.convert(each, ThreadPoolAdapterParameter.class));
